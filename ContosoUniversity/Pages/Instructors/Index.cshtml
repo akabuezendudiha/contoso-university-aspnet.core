@@ -1,0 +1,156 @@
+﻿@page "{id:int?}"
+@model ContosoUniversity.Pages.Instructors.IndexModel
+
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<h1>Instructors</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                LastName
+            </th>
+            <th>
+                FirstMidName
+            </th>
+            <th>
+                HireDate
+            </th>
+            <th>
+                Office
+            </th>
+            <th>
+                Courses
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.InstructorData.Instructors)
+        {
+            var selectedInstructor = item.ID == Model.InstructorID
+            ? "table-success"
+            : "";
+            <tr class="@selectedInstructor">
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstMidName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HireDate)
+                </td>
+                <td>
+                    @if (item.OfficeAssignment != null)
+                    {
+                        @item.OfficeAssignment.Location
+                    }
+                </td>
+                <td>
+                    @foreach (var course in item.Courses)
+                    {
+                        @course.CourseID @: @course.Title <br />
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Index" asp-route-id="@item.ID">Select</a> |
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.InstructorData.Courses != null)
+{
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2>Courses Taught by Selected Instructor</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            Number
+                        </th>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Department
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InstructorData.Courses)
+                    {
+                        var selectedCourse = item.CourseID == Model.CourseID
+                        ? "table-success"
+                        : "";
+                        <tr class="@selectedCourse">
+                            <td>
+                                <a asp-page="./Index"
+                                   asp-route-id="@Model.InstructorID"
+                                   asp-route-courseId="@item.CourseID">
+                                    Select
+                                </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Department.Name)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+} 
+
+@if (Model.InstructorData.Enrollments != null)
+{
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2>Students Enrolled in Selected Course</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Full Name
+                        </th>
+                        <th>
+                            Grade
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InstructorData.Enrollments)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Student.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Grade)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+} 
